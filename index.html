@@ -10,7 +10,7 @@
       --bg2:#111827;
       --text:#e5e7eb;
       --muted:#9ca3af;
-      --btn:#111827cc;
+      --panel:#0b1220cc;
       --stroke:#ffffff22;
     }
     *{box-sizing:border-box}
@@ -42,114 +42,104 @@
       border: 1px solid var(--stroke);
       backdrop-filter: blur(10px);
     }
-    .title h1{
-      margin:0; font-size:16px; letter-spacing:.2px;
-    }
-    .title .sub{
-      font-size:12px; color:var(--muted);
-    }
+    .title h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .title .sub{ font-size:12px; color:var(--muted); }
 
     .stage{
       position:relative;
-      width:min(720px, 96vw);
-      height:min(860px, 92vh);
-      margin: 78px auto 0;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
+      width:min(980px, 96vw);
+      margin: 76px auto 0;
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: 0 22px 60px rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      aspect-ratio: 1 / 1;
     }
-
-    /* layers */
-    .layer{ position:absolute; left:50%; transform:translateX(-50%); user-select:none; pointer-events:none; }
-    .temple{
-      top: 40px;
-      width: min(560px, 92vw);
-      height:auto;
-      z-index: 10;
-      filter: drop-shadow(0 18px 40px rgba(0,0,0,.55));
-    }
-    .buddha{
-      top: -10px;
-      left: 16%;
-      transform: translateX(-50%);
-      width: 260px;
-      opacity:.95;
-      z-index: 6;
-      filter: drop-shadow(0 18px 40px rgba(0,0,0,.45));
-    }
-    .cloud{
-      top: 100px;
-      left: 54%;
-      transform: translateX(-50%);
-      width: 520px;
-      opacity:.9;
-      z-index: 5;
-      animation: float 6s ease-in-out infinite;
-    }
-    @keyframes float{
-      0%,100%{ transform:translateX(-50%) translateY(0); }
-      50%{ transform:translateX(-50%) translateY(-10px); }
-    }
-
-    /* incense burner area */
-    .burnerArea{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      bottom: 40px;
-      width: min(520px, 92vw);
-      height: 250px;
-      z-index: 30;
+    .bg{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      user-select:none;
       pointer-events:none;
+      transform: translateZ(0);
     }
 
-    /* sticks container */
+    canvas#smoke{
+      position:absolute;
+      inset:0;
+      width:100%; height:100%;
+      pointer-events:none;
+      opacity:.95;
+      z-index: 20;
+    }
+
     .sticks{
       position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      bottom: 66px;
-      width: 280px;
-      height: 180px;
-      z-index: 35;
+      inset:0;
+      z-index: 30;
       pointer-events:none;
     }
     .stick{
       position:absolute;
-      bottom:0;
       width: 26px;
-      height:auto;
-      transform-origin: bottom center;
-      animation: rise .35s ease-out;
+      height: 260px;
+      transform-origin: 50% 95%;
       filter: drop-shadow(0 10px 18px rgba(0,0,0,.45));
+      animation: rise .35s ease-out;
+      transform: rotate(var(--rot));
     }
     @keyframes rise{
-      from{ transform: translateY(30px) scale(.95); opacity:0; }
-      to{ transform: translateY(0) scale(1); opacity:1; }
+      from{ transform: translateY(28px) scale(.95) rotate(var(--rot)); opacity:0; }
+      to{ transform: translateY(0) scale(1) rotate(var(--rot)); opacity:1; }
     }
-
-    /* smoke canvas */
-    canvas#smoke{
+    .stick:before{
+      content:"";
       position:absolute;
-      left:50%;
-      transform:translateX(-50%);
-      bottom: 100px;
-      width: min(520px, 92vw);
-      height: 320px;
-      z-index: 34;
-      pointer-events:none;
-      opacity:.95;
+      left:50%; transform:translateX(-50%);
+      top: 30px;
+      width: 10px;
+      height: 210px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fbbf24, #b45309);
+      border: 1px solid rgba(0,0,0,.25);
+    }
+    .stick:after{
+      content:"";
+      position:absolute;
+      left:50%; transform:translateX(-50%);
+      top: 10px;
+      width: 14px;
+      height: 24px;
+      border-radius: 999px;
+      background: #ef4444;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 0 0 rgba(239,68,68,0);
+      transition: box-shadow .25s ease;
+    }
+    .stick.on:after{ box-shadow: 0 0 16px 10px rgba(239,68,68,.16); }
+    .stick .stem{
+      position:absolute;
+      left:50%; transform:translateX(-50%);
+      bottom: 2px;
+      width: 6px;
+      height: 44px;
+      border-radius: 999px;
+      background: #3b2f2f;
+      opacity:.9;
     }
 
-    /* controls */
     .controls{
       position:fixed;
       left:50%;
       transform:translateX(-50%);
-      bottom: 16px;
+      bottom: 14px;
       display:flex;
       gap:10px;
       z-index: 60;
+      flex-wrap:wrap;
+      justify-content:center;
+      padding: 0 12px;
     }
     .btn{
       cursor:pointer;
@@ -158,22 +148,20 @@
       gap:10px;
       padding: 10px 12px;
       border-radius: 16px;
-      background: var(--btn);
+      background: var(--panel);
       border: 1px solid var(--stroke);
       color: var(--text);
       backdrop-filter: blur(10px);
       box-shadow: 0 18px 50px rgba(0,0,0,.35);
-      font-weight:700;
+      font-weight:900;
+      user-select:none;
     }
-    .btn img{ width:18px; height:18px; }
     .btn:active{ transform: translateY(1px); }
-    .btn.secondary{ opacity:.9; font-weight:650; }
 
-    /* note */
-    .note{
+    .hint{
       position:fixed;
-      right: 14px;
-      bottom: 14px;
+      right: 12px;
+      bottom: 12px;
       padding:10px 12px;
       border-radius: 16px;
       background: rgba(0,0,0,.22);
@@ -181,12 +169,22 @@
       color: var(--muted);
       font-size:12px;
       z-index: 60;
-      max-width: 240px;
+      max-width: 260px;
       backdrop-filter: blur(10px);
     }
-    @media (max-width: 520px){
-      .note{ display:none; }
+    @media (max-width: 620px){ .hint{ display:none; } }
+
+    .missing{
+      position:absolute; inset:0;
+      display:none;
+      place-items:center;
+      text-align:center;
+      padding: 18px;
+      color: var(--muted);
+      z-index: 5;
+      background: rgba(0,0,0,.35);
     }
+    .missing b{ color: var(--text); }
   </style>
 </head>
 
@@ -194,67 +192,74 @@
   <div class="topbar">
     <div class="title">
       <h1>Thắp hương online</h1>
-      <div class="sub">Bấm “Thắp hương” để cắm nhang & khói bay</div>
+      <div class="sub">Bấm “Thắp hương” để cắm nhang & khói bay (theo mẫu ảnh)</div>
     </div>
   </div>
 
   <div class="stage" id="stage">
-    <!-- decorative -->
-    <img class="layer buddha" alt="Phật" src="https://bktemple.vercel.app/img_phat-removebg-preview.png">
-    <img class="layer cloud" alt="Mây" src="https://bktemple.vercel.app/may-removebg-preview.png">
-
-    <!-- main temple -->
-    <img class="layer temple" alt="Đền" src="./temple.png?v=2">
-
-    <!-- smoke -->
-    <canvas id="smoke"></canvas>
-
-    <!-- incense sticks -->
-    <div class="burnerArea">
-      <div class="sticks" id="sticks"></div>
+    <img class="bg" id="scene" alt="Bàn thờ" src="./scene.png?v=1">
+    <div class="missing" id="missing">
+      <div>
+        <div style="font-size:18px;font-weight:900;margin-bottom:8px;">Chưa thấy ảnh nền <b>scene.png</b></div>
+        <div>Hãy upload ảnh mẫu vào repo và đặt tên <b>scene.png</b><br/>rồi refresh lại trang.</div>
+      </div>
     </div>
+
+    <canvas id="smoke"></canvas>
+    <div class="sticks" id="sticks"></div>
   </div>
 
   <div class="controls">
-    <button class="btn" id="addIncense">
-      <img alt="+" src="https://bktemple.vercel.app/add_icon.png">
-      Thắp hương
-    </button>
-    <button class="btn secondary" id="bow3">🙏 Lạy 3 lạy</button>
-    <button class="btn secondary" id="clear">🧹 Dọn bàn</button>
+    <button class="btn" id="addIncense">🧧 Thắp hương</button>
+    <button class="btn" id="bow3">🙏 Lạy 3 lạy</button>
+    <button class="btn" id="clear">🧹 Dọn bàn</button>
   </div>
 
-  <div class="note">
+  <div class="hint">
     Tip: thắp tối đa 9 nén.<br/>
-    Nếu muốn “đúng style” hơn, mình sẽ thêm: hoa/quả/nến dạng ảnh giống mẫu.
+    Nếu nhang chưa đúng tâm lư hương, chỉnh 2 số INCENSE_ANCHOR trong code là xong.
   </div>
 
 <script>
-  // ========= Incense logic =========
-  const sticksEl = document.getElementById("sticks");
+  // ====== Vị trí "tâm lư hương" theo tỉ lệ (0..1) của khung ảnh ======
+  const INCENSE_ANCHOR = { x: 0.53, y: 0.78 }; // chỉnh nhẹ nếu cần
   const MAX = 9;
-  let count = 0;
 
-  function randomBetween(a,b){ return a + Math.random()*(b-a); }
+  const stage = document.getElementById("stage");
+  const sticksEl = document.getElementById("sticks");
+  const sceneImg = document.getElementById("scene");
+  const missingEl = document.getElementById("missing");
+
+  sceneImg.addEventListener("error", () => {
+    missingEl.style.display = "grid";
+  });
+
+  let count = 0;
+  function rnd(a,b){ return a + Math.random()*(b-a); }
 
   function addStick(){
     if(count >= MAX) return;
     count++;
 
-    const img = document.createElement("img");
-    img.src = "https://bktemple.vercel.app/nhang.png";
-    img.className = "stick";
+    const stick = document.createElement("div");
+    stick.className = "stick on";
+    stick.style.setProperty("--rot", `${rnd(-9,9)}deg`);
+    stick.appendChild(Object.assign(document.createElement("div"), { className: "stem" }));
 
-    // spread around center
-    const center = 140; // sticks width/2
-    const offset = (count - 1) * 18 - ((Math.min(count, MAX) - 1) * 18)/2;
-    const x = center + offset + randomBetween(-6, 6);
-    const rot = randomBetween(-8, 8);
+    const rect = stage.getBoundingClientRect();
+    const ax = rect.width * INCENSE_ANCHOR.x;
+    const ay = rect.height * INCENSE_ANCHOR.y;
 
-    img.style.left = `${x}px`;
-    img.style.transform = `rotate(${rot}deg)`;
-    sticksEl.appendChild(img);
+    const spread = 18;
+    const offset = (count - 1) * spread - ((Math.min(count, MAX) - 1) * spread)/2;
+    const x = ax + offset + rnd(-6,6);
+    const y = ay + rnd(-2,2);
 
+    stick.style.left = `${x}px`;
+    stick.style.top = `${y - 250}px`; // 250 ~ chiều cao nhang
+
+    sticksEl.appendChild(stick);
+    setTimeout(()=> stick.classList.remove("on"), 6500);
     startSmokeBoost();
   }
 
@@ -264,23 +269,17 @@
     puffs.length = 0;
   }
 
-  // ========= Bow 3 times (simple) =========
   let bowing = false;
-  const stage = document.getElementById("stage");
   async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
   async function bow3(){
     if(bowing) return;
     bowing = true;
     for(let i=0;i<3;i++){
       stage.animate(
-        [
-          { transform:"translateY(0)" },
-          { transform:"translateY(10px)" },
-          { transform:"translateY(0)" }
-        ],
+        [{ transform:"translateY(0)" },{ transform:"translateY(10px)" },{ transform:"translateY(0)" }],
         { duration: 650, easing:"ease-in-out" }
       );
-      await sleep(750);
+      await sleep(760);
     }
     bowing = false;
   }
@@ -289,10 +288,11 @@
   document.getElementById("clear").onclick = clearAll;
   document.getElementById("bow3").onclick = bow3;
 
-  // ========= Smoke (canvas) =========
+  // ====== Smoke canvas ======
   const canvas = document.getElementById("smoke");
   const ctx = canvas.getContext("2d");
   let W=0, H=0;
+
   function resize(){
     const r = canvas.getBoundingClientRect();
     W = canvas.width = Math.floor(r.width * devicePixelRatio);
@@ -314,39 +314,35 @@
   }
 
   let boost = 0;
-  function startSmokeBoost(){
-    boost = 80; // more smoke right after lighting
-  }
+  function startSmokeBoost(){ boost = 110; }
 
   function draw(){
     ctx.clearRect(0,0,W,H);
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
 
-    // generate puffs from "stick tips"
-    const baseX = W/2;
-    const baseY = H*0.82;
+    const ax = W * INCENSE_ANCHOR.x;
+    const ay = H * INCENSE_ANCHOR.y;
+
     const sources = Math.max(1, count);
 
-    // regular smoke
     for(let i=0;i<sources;i++){
-      if(Math.random() < 0.14){
-        const sx = baseX + (i-(sources-1)/2)*18*devicePixelRatio + (Math.random()-0.5)*10*devicePixelRatio;
-        const sy = baseY + (Math.random()-0.5)*6*devicePixelRatio;
+      if(Math.random() < 0.12){
+        const sx = ax + (i-(sources-1)/2)*18*devicePixelRatio + (Math.random()-0.5)*10*devicePixelRatio;
+        const sy = ay*devicePixelRatio + (Math.random()-0.5)*6*devicePixelRatio;
         addPuff(sx, sy);
       }
     }
-    // boosted smoke
+
     if(boost > 0){
       boost--;
       for(let k=0;k<2;k++){
-        const sx = baseX + (Math.random()-0.5)*30*devicePixelRatio;
-        const sy = baseY + (Math.random()-0.5)*10*devicePixelRatio;
+        const sx = ax + (Math.random()-0.5)*28*devicePixelRatio;
+        const sy = ay*devicePixelRatio + (Math.random()-0.5)*10*devicePixelRatio;
         addPuff(sx, sy);
       }
     }
 
-    // draw puffs
     for(let i=puffs.length-1;i>=0;i--){
       const p = puffs[i];
       p.life++;
